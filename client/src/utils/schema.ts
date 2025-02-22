@@ -1,8 +1,9 @@
 import * as Yup from "yup";
+import { formFeedback } from "./constants";
 export const loginSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
+    .email(formFeedback.invalidEmail)
+    .required(formFeedback.required("Email")),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -12,5 +13,5 @@ export const loginSchema = Yup.object().shape({
       /[@$!%*?&]/,
       "Password must contain at least one special character (@, $, !, %, *, ?, &)"
     )
-    .required("Password is required"),
+    .required(formFeedback.required("Password")),
 });

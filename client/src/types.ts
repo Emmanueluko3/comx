@@ -1,60 +1,44 @@
+export type User = {
+  email: string;
+  password: string;
+  StaySignedIn: boolean;
+};
+// INDIVIDUAL
 export interface UserData {
-  user_id:        string;
-  email:          string;
-  name:           string;
-  picture:        string;
+  user_id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone_number: string;
+  picture: string;
   email_verified: boolean;
-  user_metadata:  UserMetadata;
-  last_login:     Date | string;
-  given_name:     null;
-  family_name:    null;
-  blocked:        boolean;
+  last_login: Date | string;
+  onboarding_data: OnboardingData;
 }
 
 export interface UserMetadata {
   role: number | string;
-  org:  string;
+  org: string;
 }
 
-// ORGANISATION 
+// ORGANISATION
 
 export interface OrgData {
-  org_id:             string;
-  main_domain:        string;
-  unique_name:        string;
-  display_name:       string;
-  parent_org:         null;
-  organization_state: string;
-  organization_type:  string;
-  onboarding_type:    string;
-  created_time:       Date;
-  last_updated:       Date;
-  _id:                string;
-  profile:            Profile;
-  information:        Information;
-  children:           any[];
-  domains:            any[];
-  onboarding_data:    OnboardingData;
-  lifecycle_events:   any[];
-}
-
-export interface Information {
-  name:      string;
-  sector:    null;
-  employees: null;
-  revenues:  null;
+  org_id: string;
+  org_email: string;
+  org_name: string;
+  date_of_incorporation: Date;
+  type_of_business: string;
+  onboarding_type: string;
+  created_time: Date;
+  last_updated: Date;
+  _id: string;
+  onboarding_data: OnboardingData;
 }
 
 export interface OnboardingData {
   activeStep: number;
-  complete:   boolean;
-  consented:  boolean;
-  form:       any[];
-}
-
-export interface Profile {
-  company_logo:  string;
-  contact_name:  string;
-  contact_email: string;
-  industry:      string;
+  complete: boolean;
+  consented: boolean;
+  form: any[];
 }

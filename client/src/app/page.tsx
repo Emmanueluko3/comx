@@ -4,6 +4,7 @@ import ThemeToggle from "@/components/ToggleTheme";
 import Button from "@/components/common/Button";
 import Logo from "@/components/common/Logo";
 import { useRouter } from "next/navigation";
+import { PAGES } from "@/utils/constants";
 
 export default function Home() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function Home() {
           <p className="md:text-sm text-xs mb-8 text-center">Welcome to ComX</p>
 
           <Button
-            onClick={() => handleUserAction("/sign-in")}
+            onClick={() => handleUserAction(PAGES.auth.signIn)}
             className="w-full rounded-sm font-bold"
           >
             Sign in
@@ -43,7 +44,7 @@ export default function Home() {
           <p className="md:text-sm text-xs mb-8 text-center">Join the Family</p>
 
           <Button
-            onClick={() => handleUserAction("/register")}
+            onClick={() => handleUserAction(PAGES.auth.register)}
             variant="dark"
             className="w-full rounded-sm font-bold"
           >

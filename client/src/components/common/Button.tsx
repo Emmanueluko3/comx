@@ -1,10 +1,12 @@
 import React, { ButtonHTMLAttributes } from "react";
-import clsx from "clsx";
+import { ScaleLoader } from "react-spinners";
+import { twMerge } from "tailwind-merge";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger" | "outline" | "dark";
   size?: "sm" | "md" | "lg";
   rounded?: "none" | "sm" | "md" | "lg" | "full";
+  isLoading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -13,8 +15,9 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   size = "md",
   rounded = "md",
-  className,
+  className = "",
   disabled = false,
+  isLoading = false,
   onClick,
   ...props
 }) => {
@@ -48,17 +51,21 @@ const Button: React.FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={clsx(
+      className={twMerge(
         baseStyles,
         variantStyles[variant],
         sizeStyles[size],
         roundedStyles[rounded],
-        disabled ? "opacity-50 cursor-not-allowed" : "",
+        disabled && "opacity-50 cursor-not-allowed",
         className
       )}
       {...props}
     >
-      {children}
+      {isLoading ? (
+        <ScaleLoader color="currentColor" height="1.3em" />
+      ) : (
+        children
+      )}
     </button>
   );
 };

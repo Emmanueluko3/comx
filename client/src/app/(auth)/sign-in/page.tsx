@@ -5,8 +5,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { loginSchema } from "@/utils/schema";
 import Link from "next/link";
 import { PAGES } from "@/utils/constants";
+import BackButton from "@/components/common/BackButton";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SignIn() {
+  const { login } = useAuth();
   return (
     <motion.div
       initial={{ y: "100%", opacity: 0 }}
@@ -25,20 +28,23 @@ export default function SignIn() {
       <Formik
         initialValues={{ email: "", password: "", StaySignedIn: false }}
         validationSchema={loginSchema}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async (values, { setSubmitting }) => {
+          await login(values);
+          setSubmitting(false);
+        }}
       >
         {({ errors, touched, isSubmitting }) => (
           <Form className="flex flex-col gap-4 w-full">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="mb-1 flex text-base">
+              <label htmlFor="email" className="mb-1 flex text-sm">
                 Your Email
               </label>
               <Field
                 type="email"
                 name="email"
                 id="email"
-                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full ${
+                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
                   errors.email && touched.email
                     ? "border-red-500"
                     : "border-gray-300"
@@ -54,14 +60,14 @@ export default function SignIn() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="mb-1 flex text-base">
+              <label htmlFor="password" className="mb-1 flex text-sm">
                 Your Password
               </label>
               <Field
                 type="password"
                 name="password"
                 id="password"
-                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full ${
+                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
                   errors.password && touched.password
                     ? "border-red-500"
                     : "border-gray-300"
@@ -86,14 +92,14 @@ export default function SignIn() {
                 />
                 <label
                   htmlFor="StaySignedIn"
-                  className="flex text-nowrap text-base"
+                  className="flex text-nowrap text-sm"
                 >
                   Stay Signed in
                 </label>
               </div>
               <Link
                 href={PAGES.auth.forgotPassword}
-                className="text-base text-red-500"
+                className="text-sm text-red-500"
               >
                 Forgot Password?
               </Link>
@@ -101,15 +107,19 @@ export default function SignIn() {
 
             <Button
               type="submit"
+              isLoading={isSubmitting}
               disabled={isSubmitting}
               // onClick={() => login(`${origin}${PAGES.validateUser}`)}
-              className="w-full rounded-sm font-bold"
+              className="w-full rounded-sm font-bold mb-4"
             >
               Sign in
             </Button>
           </Form>
         )}
       </Formik>
+      <BackButton className="w-full rounded-sm text-gray-950 font-bold bg-gray-200 hover:bg-gray-300">
+        Back
+      </BackButton>
     </motion.div>
   );
 }
