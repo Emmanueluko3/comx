@@ -5,8 +5,6 @@ export const ICONS = {
 
 export const IMAGES = {
   logo: "/logo.png",
-  profilePlaceholder: "/profile_placeholder.png",
-  companyLogo: "/logo_sample.svg",
 };
 
 export const PAGES = {

@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PAGES } from "@/utils/constants";
-import { OrgData, User, UserData } from "@/types";
+import { User, UserData } from "@/types";
+import axios from "axios";
+import { baseUrl } from "@/api";
 
 type AuthContextType = {
-  user: UserData | OrgData | null;
+  user: UserData | null;
   accessToken: string | null;
   login: (userData: User) => void;
   logout: () => void;
@@ -14,7 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [user, setUser] = useState<UserData | OrgData | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -38,17 +40,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = async (userData: any) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        localStorage.setItem("accessToken", "skjksjd");
-        localStorage.setItem("user", JSON.stringify(userData));
-        resolve("Done");
-      }, 2000);
-    });
+    const { StaySignedIn, ...newUserData } = userData;
+
+    try {
+      const response = await axios.post(
+        baseUrl + "api/v1/auth/sign-in",
+        newUserData,
+        { withCredentials: true }
+      );
+      const { accessToken, data: user } = response.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      router.push(PAGES.dashboard.index);
+      setUser(user);
+      setAccessToken(accessToken);
+    } catch (error) {
+      console.error("Error during auth login:", error);
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
     setUser(null);
     setAccessToken(null);
     router.push(PAGES.home);

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { PAGES } from "./constants";
+import { Loader } from "@/components/common/Loader";
 
 function withAuth<T extends object>(WrappedComponent: React.ComponentType<T>) {
   const Wrapper = (props: T) => {
@@ -22,7 +23,11 @@ function withAuth<T extends object>(WrappedComponent: React.ComponentType<T>) {
     }, [isAuthChecked, user, accessToken, router]);
 
     if (!isAuthChecked) {
-      return null;
+      return (
+        <div className="flex h-screen items-center justify-center">
+          <Loader />
+        </div>
+      );
     }
 
     return <WrappedComponent {...props} />;

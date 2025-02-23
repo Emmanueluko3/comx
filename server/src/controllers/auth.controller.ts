@@ -108,9 +108,9 @@ export const verifyUserOTPController = asyncErrorHandler(
 
     const ACCESS_TOKEN_EXPIRATION = 60 * 60 * 1000;
 
-    const accessToken = createAccessToken(user.email, user.id);
+    const accessToken = createAccessToken(user.email, user._id);
 
-    const newRefreshToken = createRefreshToken(user.email, user.id);
+    const newRefreshToken = createRefreshToken(user.email, user._id);
 
     await handleRefreshTokenRotation(user, cookie);
     user.refreshToken.push(newRefreshToken);
@@ -158,9 +158,9 @@ export const loginUserController = asyncErrorHandler(
     if (user) {
       const ACCESS_TOKEN_EXPIRATION = 60 * 60 * 1000;
 
-      const accessToken = createAccessToken(user.email, user.id);
+      const accessToken = createAccessToken(user.email, user._id);
 
-      const newRefreshToken = createRefreshToken(user.email, user.id);
+      const newRefreshToken = createRefreshToken(user.email, user._id);
 
       await handleRefreshTokenRotation(user, cookie);
       user.refreshToken.push(newRefreshToken);

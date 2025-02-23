@@ -7,9 +7,15 @@ import Link from "next/link";
 import { PAGES } from "@/utils/constants";
 import BackButton from "@/components/common/BackButton";
 import { useAuth } from "@/context/AuthContext";
+import { FaEye } from "react-icons/fa";
+import { IoIosEyeOff } from "react-icons/io";
+import { useState } from "react";
 
 export default function SignIn() {
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => setShowPassword((prev) => !prev);
   return (
     <motion.div
       initial={{ y: "100%", opacity: 0 }}
@@ -63,17 +69,32 @@ export default function SignIn() {
               <label htmlFor="password" className="mb-1 flex text-sm">
                 Your Password
               </label>
-              <Field
-                type="password"
-                name="password"
-                id="password"
-                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
-                  errors.password && touched.password
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <Field
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
+                    errors.password && touched.password
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                  placeholder="Enter your password"
+                />
+
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute right-3 top-2.5"
+                >
+                  {showPassword ? (
+                    <IoIosEyeOff size={20} />
+                  ) : (
+                    <FaEye size={20} />
+                  )}
+                </button>
+              </div>
+
               <ErrorMessage
                 name="password"
                 component="div"

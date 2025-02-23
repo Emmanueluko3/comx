@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import SideNav from "@/components/SideNav";
 import React, { Suspense } from "react";
 import withAuth from "@/utils/withAuth";
-import { Spinner } from "@/components/common/Spinner";
+import { Loader } from "@/components/common/Loader";
 
 interface DashboardLayoutProps {
   header?: React.ReactNode;
@@ -24,7 +24,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       transition={{ duration: 0.6, ease: "easeInOut" }}
       className="flex flex-col h-screen font-[family-name:var(--font-geist-sans)] w-full"
     >
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<Loader />}>
         <div className="grid grid-cols-[auto_1fr] h-full w-full">
           <div className="flex items-center justify-center h-full relative">
             <SideNav />

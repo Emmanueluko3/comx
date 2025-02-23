@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-
+import cors from "cors";
 import connectDB from "./config/dbConnect";
 // middlewares
 import errorHandlerMiddleware from "./middlewares/error-handler";
 import routeNotFound from "./middlewares/route-not-found";
-import verifyJWT from "./middlewares/verifyJWT";
+// import verifyJWT from "./middlewares/verifyJWT";
 
 import authRouter from "./routes/auth.route";
 
@@ -15,8 +15,7 @@ const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "50mb", extended: false }));
-const cors = require("cors");
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 
 connectDB(process.env.MONGODB_URI);
 
