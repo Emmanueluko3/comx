@@ -3,6 +3,7 @@ import User from "../models/user.model";
 import { UnauthorizedError } from "../errors";
 import decodeToken from "../utils/decodeToken";
 import asyncErrorHandler from "../utils/asyncErrorHandler";
+import { StatusCodes } from "http-status-codes";
 
 export interface AuthRequest extends Request {
   user?: any;
@@ -24,14 +25,14 @@ const verifyJWT = asyncErrorHandler(
     console.log(verifyToken);
 
     if (verifyToken) {
-      const user: any = await User.findOne({ username: verifyToken.username });
+      const user: any = await User.findOne({ email: verifyToken.email });
       req.user = user;
       req.id = user._id;
 
       return next();
     }
 
-    return res.status(403).json("Bad Access Token");
+    return res.status(StatusCodes.FORBIDDEN).json("Bad Access Token");
   }
 );
 export default verifyJWT;

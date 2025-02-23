@@ -1,15 +1,19 @@
 import express from "express";
 import {
-  //   registerUserController,
   loginUserController,
-  //   refreshTokenController,
-  //   logoutUserController,
+  refreshTokenController,
+  logoutUserController,
+  verifyUserOTPController,
+  registerIndividualUserController,
+  registerCorporateUserController,
 } from "../controllers/auth.controller";
 const router = express.Router();
 
-// router.route("/register").post(registerUserController);
+router.route("/register-individual").post(registerIndividualUserController);
+router.route("/register-corporate").post(registerCorporateUserController);
+router.route("/register/verify-otp").post(verifyUserOTPController);
 router.route("/sign-in").post(loginUserController);
-// router.route("/refresh-token").get(refreshTokenController);
-// router.route("/logout").get(logoutUserController);
+router.route("/refresh-token").get(refreshTokenController);
+router.route("/logout").get(logoutUserController);
 
 export default router;

@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
@@ -26,11 +26,10 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1/auth", authRouter);
-app.use(verifyJWT);
+// app.use(verifyJWT);
 
 // Other routes
-
-app.use(errorHandlerMiddleware);
 app.use(routeNotFound);
+app.use(errorHandlerMiddleware);
 
 export default app;

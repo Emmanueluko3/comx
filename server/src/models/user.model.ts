@@ -17,6 +17,8 @@ const userSchema = new mongoose.Schema(
     registration_number: { type: String },
     address: { type: String },
     phone_number: { type: String },
+    verified: { type: Boolean, default: false },
+    refreshToken: [String],
   },
   { timestamps: true }
 );
