@@ -5,11 +5,11 @@ import { Formik, Form } from "formik";
 import { individualValidationSchemas } from "@/utils/schema";
 import { PAGES } from "@/utils/constants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormField from "@/components/formik/Input";
 import BackButton from "@/components/common/BackButton";
 import { useAuth } from "@/context/AuthContext";
-import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 const tabs = ["individual", "corporate"];
 
@@ -23,6 +23,17 @@ export default function Register() {
   const activeTab = searchParams.get("tab");
   const currentPage =
     searchParams.get("page") || PAGES.auth.individualPages.basicInformation;
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const page = searchParams.get("page");
+
+    if (!tab || !page) {
+      router.replace(
+        `/register?tab=${tabs[0]}&page=${PAGES.auth.individualPages.basicInformation}`
+      );
+    }
+  }, [searchParams]);
 
   // Come back and fix this
   const handleTabChange = (tab: string) => {
@@ -40,12 +51,8 @@ export default function Register() {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  // fromik general error
-  const [generalError, setGeneralError] = useState("");
-
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
     setSubmitting(true);
-    setGeneralError("");
 
     try {
       const pages = Object.values(PAGES.auth.individualPages);
@@ -56,23 +63,37 @@ export default function Register() {
       }
 
       if (currentPage === PAGES.auth.individualPages.loginDetails) {
-        console.log("Fired");
         const { otp, confirm_password, ...payload } = values;
+        if (!isFormComplete(payload)) {
+          router.push("/register?tab=individual&page=basic-information");
+          return;
+        }
         payload.user_type = "individual";
-        await handleRegisterUser(payload, "register-individual");
+        const response = await handleRegisterUser(
+          payload,
+          "register-individual"
+        );
+        toast.success(response.data.message);
         return nextPage && handleNextPage(nextPage);
       }
 
       if (currentPage === PAGES.auth.individualPages.otpVerification) {
-        await handleVerifyUserOTP({ otp: values.otp, email: values.email });
+        const response = await handleVerifyUserOTP({
+          otp: values.otp,
+          email: values.email,
+        });
+        toast.success(response.data.message);
         return nextPage && handleNextPage(nextPage);
       }
     } catch (error: any) {
       console.error("Error:", error);
-      setGeneralError(error?.response.data.message);
+      toast.error(error?.response.data.message);
     } finally {
       setSubmitting(false);
     }
+  };
+  const isFormComplete = (values: any) => {
+    return Object.values(values).every((val: any) => val.trim() !== "");
   };
 
   return (
@@ -205,10 +226,6 @@ export default function Register() {
               </div>
             )}
 
-            {generalError && (
-              <p className="col-span-full text-red-500">{generalError}</p>
-            )}
-
             <div className="flex justify-between col-span-full mt-32">
               <BackButton
                 type="button"
@@ -222,7 +239,14 @@ export default function Register() {
                 disabled={isSubmitting}
                 className="w-fit px-0 rounded-sm bg-transparent hover:bg-transparent hover:text-red-700 text-red-600"
               >
-                {isSubmitting ? "Processing..." : "NEXT STEP"}
+                {currentPage === PAGES.auth.individualPages.basicInformation &&
+                  (isSubmitting ? "Processing..." : "NEXT STEP")}
+
+                {currentPage === PAGES.auth.individualPages.loginDetails &&
+                  (isSubmitting ? "Processing..." : "FINISH")}
+
+                {currentPage === PAGES.auth.individualPages.otpVerification &&
+                  (isSubmitting ? "Processing..." : "VERIFY")}
               </Button>
             </div>
           </Form>

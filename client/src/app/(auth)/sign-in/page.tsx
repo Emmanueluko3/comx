@@ -5,7 +5,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { loginSchema } from "@/utils/schema";
 import Link from "next/link";
 import { PAGES } from "@/utils/constants";
-import BackButton from "@/components/common/BackButton";
 import { useAuth } from "@/context/AuthContext";
 import FormField from "@/components/formik/Input";
 
@@ -95,9 +94,12 @@ export default function SignIn() {
           </Form>
         )}
       </Formik>
-      <BackButton className="w-full rounded-sm text-gray-950 font-bold bg-gray-200 hover:bg-gray-300">
+      <Link
+        href={PAGES.home}
+        className="w-full flex justify-center items-center py-2 rounded-sm text-gray-950 font-bold bg-gray-200 hover:bg-gray-300"
+      >
         Back
-      </BackButton>
+      </Link>
     </motion.div>
   );
 }
