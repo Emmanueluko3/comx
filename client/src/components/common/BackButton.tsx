@@ -1,11 +1,17 @@
+import { ButtonHTMLAttributes } from "react";
 import { useRouter } from "next/navigation";
-import Button from "./Button";
+import Button from "@/components/common/Button";
 
-export default function BackButton({ ...props }) {
+interface BackButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+export default function BackButton({ children, ...props }: BackButtonProps) {
   const router = useRouter();
+
   return (
     <Button {...props} onClick={() => router.back()}>
-      Back
+      {children}
     </Button>
   );
 }

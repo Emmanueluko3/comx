@@ -1,13 +1,80 @@
 "use client";
 import Button from "@/components/common/Button";
 import { motion } from "framer-motion";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { loginSchema } from "@/utils/schema";
-import Link from "next/link";
+import { Formik, Form } from "formik";
+import { individualValidationSchemas } from "@/utils/schema";
 import { PAGES } from "@/utils/constants";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import FormField from "@/components/formik/Input";
 import BackButton from "@/components/common/BackButton";
+import { useAuth } from "@/context/AuthContext";
+import { AxiosError } from "axios";
 
-export default function SignIn() {
+const tabs = ["individual", "corporate"];
+
+export default function Register() {
+  const { handleRegisterUser, handleVerifyUserOTP } = useAuth();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+
+  const activeTab = searchParams.get("tab");
+  const currentPage =
+    searchParams.get("page") || PAGES.auth.individualPages.basicInformation;
+
+  // Come back and fix this
+  const handleTabChange = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tab);
+    params.set("page", PAGES.auth.individualPages.basicInformation);
+
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleNextPage = (page: string) => {
+    setCompletedSteps([...completedSteps, currentPage]);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  // fromik general error
+  const [generalError, setGeneralError] = useState("");
+
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+    setSubmitting(true);
+    setGeneralError("");
+
+    try {
+      const pages = Object.values(PAGES.auth.individualPages);
+      const nextPage = pages[pages.indexOf(currentPage) + 1] || null;
+
+      if (currentPage === PAGES.auth.individualPages.basicInformation) {
+        return nextPage && handleNextPage(nextPage);
+      }
+
+      if (currentPage === PAGES.auth.individualPages.loginDetails) {
+        console.log("Fired");
+        const { otp, confirm_password, ...payload } = values;
+        payload.user_type = "individual";
+        await handleRegisterUser(payload, "register-individual");
+        return nextPage && handleNextPage(nextPage);
+      }
+
+      if (currentPage === PAGES.auth.individualPages.otpVerification) {
+        await handleVerifyUserOTP({ otp: values.otp, email: values.email });
+        return nextPage && handleNextPage(nextPage);
+      }
+    } catch (error: any) {
+      console.error("Error:", error);
+      setGeneralError(error?.response.data.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ y: "100%", opacity: 0 }}
@@ -23,97 +90,144 @@ export default function SignIn() {
         Sign up for an account and start trading today
       </p>
 
-      <Formik
-        initialValues={{ email: "", password: "", StaySignedIn: false }}
-        validationSchema={loginSchema}
-        onSubmit={(values) => console.log(values)}
-      >
-        {({ errors, touched, isSubmitting }) => (
-          <Form className="flex flex-col gap-4 w-full">
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="mb-1 flex text-sm">
-                Your Email
-              </label>
-              <Field
-                type="email"
-                name="email"
-                id="email"
-                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
-                  errors.email && touched.email
-                    ? "border-red-500"
-                    : "border-gray-300"
+      {currentPage == PAGES.auth.individualPages.basicInformation && (
+        <div className="w-full mb-8">
+          <p className="text-sm mb-3">
+            Select select the category that best describes you
+          </p>
+          <div className="flex items-center gap-4">
+            {tabs.map((tab, index) => (
+              <button
+                onClick={() => handleTabChange(tab)}
+                key={index}
+                className={`w-28 py-2 md:w-36 md:py-3 border border-gray-300 rounded-sm lg:hover:bg-gray-900 lg:hover:text-white transition-all ${
+                  activeTab === tab ? "bg-gray-900 text-white" : ""
                 }`}
-                placeholder="Enter your email"
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-xs"
-              />
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="mb-1 flex text-sm">
-                Your Password
-              </label>
-              <Field
-                type="password"
-                name="password"
-                id="password"
-                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
-                  errors.password && touched.password
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-                placeholder="Enter your password"
-              />
-              <ErrorMessage
-                name="password"
-                component="div"
-                className="text-red-500 text-xs"
-              />
-            </div>
-
-            <div className="flex justify-between items-center my-3 md:my-8">
-              <div className="flex items-center">
-                <Field
-                  type="checkbox"
-                  name="StaySignedIn"
-                  id="StaySignedIn"
-                  className="border border-[#E8ECEF] rounded w-full mr-2"
-                  placeholder="Enter your password"
-                />
-                <label
-                  htmlFor="StaySignedIn"
-                  className="flex text-nowrap text-sm"
-                >
-                  Stay Signed in
-                </label>
-              </div>
-              <Link
-                href={PAGES.auth.forgotPassword}
-                className="text-sm text-red-500"
               >
-                Forgot Password?
-              </Link>
-            </div>
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              // onClick={() => login(`${origin}${PAGES.validateUser}`)}
-              className="w-full rounded-sm font-bold mb-4"
-            >
-              Sign in
-            </Button>
+      <Formik
+        initialValues={{
+          first_name: "",
+          last_name: "",
+          email: "",
+          password: "",
+          confirm_password: "",
+          phone_number: "",
+          otp: "",
+        }}
+        validationSchema={individualValidationSchemas[currentPage]}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, isSubmitting, values }) => (
+          <Form className="grid grid-flow-row grid-cols-2 gap-4 w-full">
+            {currentPage === PAGES.auth.individualPages.basicInformation && (
+              <>
+                <FormField
+                  label="Your First Name"
+                  type="text"
+                  name="first_name"
+                  errors={errors}
+                  placeholder="Enter Your First Name"
+                  touched={touched}
+                />
+                <FormField
+                  label="Your Last Name"
+                  type="text"
+                  name="last_name"
+                  errors={errors}
+                  placeholder="Enter Your Last Name"
+                  touched={touched}
+                />
+                <div className="col-span-full">
+                  <FormField
+                    label="Your Email"
+                    type="email"
+                    name="email"
+                    errors={errors}
+                    placeholder="Enter your email"
+                    touched={touched}
+                  />
+                </div>
+              </>
+            )}
+
+            {currentPage === PAGES.auth.individualPages.loginDetails && (
+              <>
+                <FormField
+                  label="Password"
+                  type="password"
+                  name="password"
+                  errors={errors}
+                  placeholder="Enter your password"
+                  touched={touched}
+                />
+                <FormField
+                  label="Confirm Password"
+                  type="password"
+                  name="confirm_password"
+                  errors={errors}
+                  placeholder="Confirm your password"
+                  touched={touched}
+                />
+                <div className="col-span-full">
+                  <FormField
+                    label="Phone Number"
+                    type="text"
+                    name="phone_number"
+                    errors={errors}
+                    placeholder="Enter your phone number"
+                    touched={touched}
+                  />
+                </div>
+              </>
+            )}
+
+            {currentPage === PAGES.auth.individualPages.otpVerification && (
+              <div className="col-span-full">
+                <p className="text-sm md:text-sm mb-3">
+                  Enter the 4-digit code that was sent to {values.phone_number}{" "}
+                  and {""}
+                  {values.email}
+                </p>
+                <FormField
+                  type="text"
+                  name="otp"
+                  errors={errors}
+                  placeholder="Enter OTP"
+                  touched={touched}
+                />
+              </div>
+            )}
+
+            {generalError && (
+              <p className="col-span-full text-red-500">{generalError}</p>
+            )}
+
+            <div className="flex justify-between col-span-full mt-32">
+              <BackButton
+                type="button"
+                disabled={isSubmitting}
+                className="w-fit px-0 rounded-sm col-span-full bg-transparent hover:bg-transparent hover:text-gray-900 text-gray-600"
+              >
+                BACK
+              </BackButton>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-fit px-0 rounded-sm bg-transparent hover:bg-transparent hover:text-red-700 text-red-600"
+              >
+                {isSubmitting ? "Processing..." : "NEXT STEP"}
+              </Button>
+            </div>
           </Form>
         )}
       </Formik>
-      <BackButton className="w-full rounded-sm text-gray-950 font-bold bg-gray-200 hover:bg-gray-300">
-        Back
-      </BackButton>
     </motion.div>
   );
 }

@@ -13,6 +13,18 @@ export const PAGES = {
     register: "/register",
     validateUser: "/auth/validate-user",
     forgotPassword: "/forgot-password",
+    individualPages: {
+      basicInformation: "basic-information",
+      loginDetails: "login-details",
+      otpVerification: "otp-verification",
+      registrationSuccessful: "registration-successful",
+    },
+    corporatePages: {
+      basicInformation: "basic-information",
+      loginDetails: "login-details",
+      otpVerification: "otp-verification",
+      registrationSuccessful: "registration-successful",
+    },
   },
   dashboard: {
     index: "/dashboard",

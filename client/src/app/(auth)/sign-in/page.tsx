@@ -7,15 +7,11 @@ import Link from "next/link";
 import { PAGES } from "@/utils/constants";
 import BackButton from "@/components/common/BackButton";
 import { useAuth } from "@/context/AuthContext";
-import { FaEye } from "react-icons/fa";
-import { IoIosEyeOff } from "react-icons/io";
-import { useState } from "react";
+import FormField from "@/components/formik/Input";
 
 export default function SignIn() {
   const { login } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
 
-  const togglePassword = () => setShowPassword((prev) => !prev);
   return (
     <motion.div
       initial={{ y: "100%", opacity: 0 }}
@@ -41,64 +37,25 @@ export default function SignIn() {
       >
         {({ errors, touched, isSubmitting }) => (
           <Form className="flex flex-col gap-4 w-full">
-            {/* Email Field */}
             <div>
-              <label htmlFor="email" className="mb-1 flex text-sm">
-                Your Email
-              </label>
-              <Field
+              <FormField
+                label="Enter your email"
                 type="email"
                 name="email"
-                id="email"
-                className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
-                  errors.email && touched.email
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
+                errors={errors}
+                touched={touched}
                 placeholder="Enter your email"
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-xs"
               />
             </div>
 
-            {/* Password Field */}
             <div>
-              <label htmlFor="password" className="mb-1 flex text-sm">
-                Your Password
-              </label>
-              <div className="relative">
-                <Field
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  id="password"
-                  className={`border border-[#E8ECEF] px-3 p-2 rounded w-full placeholder:text-sm ${
-                    errors.password && touched.password
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                  placeholder="Enter your password"
-                />
-
-                <button
-                  type="button"
-                  onClick={togglePassword}
-                  className="absolute right-3 top-2.5"
-                >
-                  {showPassword ? (
-                    <IoIosEyeOff size={20} />
-                  ) : (
-                    <FaEye size={20} />
-                  )}
-                </button>
-              </div>
-
-              <ErrorMessage
+              <FormField
+                type="password"
                 name="password"
-                component="div"
-                className="text-red-500 text-xs"
+                errors={errors}
+                touched={touched}
+                placeholder="Enter your password"
+                enablePasswordToggle={true}
               />
             </div>
 

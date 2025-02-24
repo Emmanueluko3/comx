@@ -2,7 +2,7 @@ import React, { ButtonHTMLAttributes } from "react";
 import { ScaleLoader } from "react-spinners";
 import { twMerge } from "tailwind-merge";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger" | "outline" | "dark";
   size?: "sm" | "md" | "lg";
   rounded?: "none" | "sm" | "md" | "lg" | "full";

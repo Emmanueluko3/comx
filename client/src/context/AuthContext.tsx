@@ -9,6 +9,11 @@ type AuthContextType = {
   user: UserData | null;
   accessToken: string | null;
   login: (userData: User) => void;
+  handleRegisterUser: (payload: UserData, endpoint: string) => Promise<any>;
+  handleVerifyUserOTP: (payload: {
+    otp: string;
+    email: string;
+  }) => Promise<any>;
   logout: () => void;
 };
 
@@ -59,6 +64,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const handleRegisterUser = async (payload: UserData, endpoint: string) => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}api/v1/auth/${endpoint}`,
+        payload,
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error during auth login:", error);
+      throw error;
+    }
+  };
+
+  const handleVerifyUserOTP = async (payload: {
+    otp: string;
+    email: string;
+  }) => {
+    try {
+      const response = await axios.post(
+        baseUrl + "api/v1/auth/register/verify-otp",
+        payload,
+        { withCredentials: true }
+      );
+      const { accessToken, data: user } = response.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      router.push(PAGES.dashboard.index);
+      setUser(user);
+      setAccessToken(accessToken);
+    } catch (error) {
+      console.error("Error during auth login:", error);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
@@ -68,7 +108,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ accessToken, user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        accessToken,
+        user,
+        login,
+        handleRegisterUser,
+        handleVerifyUserOTP,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
