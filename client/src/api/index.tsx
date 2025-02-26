@@ -5,6 +5,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 const onRequest = (
   config: InternalAxiosRequestConfig<any>
@@ -29,7 +30,7 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   return Promise.reject(error);
 };
-
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 function setupInterceptorsTo(axiosInstance: AxiosInstance): AxiosInstance {
   axiosInstance.interceptors.request.use(onRequest, onRequestError);
   axiosInstance.interceptors.response.use(onResponse, onResponseError);

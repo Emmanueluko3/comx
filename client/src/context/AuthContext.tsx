@@ -4,6 +4,10 @@ import { PAGES } from "@/utils/constants";
 import { User, UserData } from "@/types";
 import axios from "axios";
 import { baseUrl } from "@/api";
+import { toast } from "sonner";
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 
 type AuthContextType = {
   user: UserData | null;
@@ -53,10 +57,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         newUserData,
         { withCredentials: true }
       );
-      const { accessToken, data: user } = response.data;
+      const { accessToken, data: user, message } = response.data;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("user", JSON.stringify(user));
       router.push(PAGES.dashboard.index);
+      toast.success(message);
       setUser(user);
       setAccessToken(accessToken);
     } catch (error) {

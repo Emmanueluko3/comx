@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 import { formFeedback } from "./constants";
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 export const loginSchema = Yup.object().shape({
   email: Yup.string()

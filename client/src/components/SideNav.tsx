@@ -11,6 +11,7 @@ import Link from "next/link";
 import Logo from "./common/Logo";
 import { usePathname } from "next/navigation";
 
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 const SideNav = () => {
   const [isExpanded, setIsExpanded] = useState(true);
   const pathname = usePathname();
@@ -64,6 +65,8 @@ const SideNav = () => {
         <Logo />
         <ul className="flex flex-col gap-3 mb-auto">
           {links.map((link, index) => {
+            /* eslint-disable  @typescript-eslint/no-explicit-any */
+
             const Icon: any = link.icon;
             return (
               <li key={index}>

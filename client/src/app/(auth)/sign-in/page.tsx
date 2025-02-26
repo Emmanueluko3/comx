@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/common/Button";
 import { motion } from "framer-motion";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { loginSchema } from "@/utils/schema";
 import Link from "next/link";
 import { PAGES } from "@/utils/constants";

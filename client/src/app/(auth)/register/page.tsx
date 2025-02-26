@@ -12,6 +12,8 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 const tabs = ["individual", "corporate"];
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 
 export default function Register() {
   const { handleRegisterUser, handleVerifyUserOTP } = useAuth();

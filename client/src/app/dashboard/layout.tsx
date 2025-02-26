@@ -6,16 +6,10 @@ import withAuth from "@/utils/withAuth";
 import { Loader } from "@/components/common/Loader";
 
 interface DashboardLayoutProps {
-  header?: React.ReactNode;
   children: React.ReactNode;
-  className?: string;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
-  header,
-  children,
-  className,
-}) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -31,8 +25,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           </div>
 
           <main className="w-full h-full flex flex-col">
-            {header}
-            <div className={`${className} flex-grow`}>{children}</div>
+            <div className={`flex-grow`}>{children}</div>
           </main>
         </div>
       </Suspense>

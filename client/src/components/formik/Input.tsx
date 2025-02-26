@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Field, ErrorMessage } from "formik";
 import { IoIosEyeOff } from "react-icons/io";
 import { FaEye } from "react-icons/fa";
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 interface FormFieldProps {
   label?: string;
