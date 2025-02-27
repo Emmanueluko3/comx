@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import app from "../app";
+import app from "../src/app";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import serverless from "serverless-http";
 
