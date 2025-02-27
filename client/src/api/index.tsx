@@ -30,13 +30,12 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   return Promise.reject(error);
 };
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 function setupInterceptorsTo(axiosInstance: AxiosInstance): AxiosInstance {
   axiosInstance.interceptors.request.use(onRequest, onRequestError);
   axiosInstance.interceptors.response.use(onResponse, onResponseError);
   return axiosInstance;
 }
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NEXT_PUBLIC_NODE_ENV === "production";
 export const baseUrl = isProduction
   ? (process.env.NEXT_PUBLIC_API_BASE_URL as string)
   : "http://localhost:9000/";

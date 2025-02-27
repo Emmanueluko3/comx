@@ -35,7 +35,7 @@ export default function Register() {
         `/register?tab=${tabs[0]}&page=${PAGES.auth.individualPages.basicInformation}`
       );
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   // Come back and fix this
   const handleTabChange = (tab: string) => {
