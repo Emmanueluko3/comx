@@ -28,6 +28,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const router = useRouter();
 
+  const setCredentials = (accessToken: string, user: UserData) => {
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
+    setAccessToken(accessToken);
+  };
+
   useEffect(() => {
     const fetchUser = () => {
       try {
@@ -58,13 +65,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         { withCredentials: true }
       );
       const { accessToken, data: user, message } = response.data;
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      router.push(PAGES.dashboard.index);
+      setCredentials(accessToken, user);
       toast.success(message);
-      setUser(user);
-      setAccessToken(accessToken);
-    } catch (error) {
+      router.push(PAGES.dashboard.index);
+    } catch (error: any) {
+      toast.error(error?.response.data.message);
       console.error("Error during auth login:", error);
     }
   };
@@ -76,8 +81,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         payload,
         { withCredentials: true }
       );
+      const { message } = response.data;
+      toast.success(message);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error?.response.data.message);
       console.error("Error during auth login:", error);
       throw error;
     }
@@ -93,13 +101,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         payload,
         { withCredentials: true }
       );
-      const { accessToken, data: user } = response.data;
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("user", JSON.stringify(user));
+      const { accessToken, data: user, message } = response.data;
+
+      setCredentials(accessToken, user);
+      toast.success(message);
       router.push(PAGES.dashboard.index);
-      setUser(user);
-      setAccessToken(accessToken);
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error?.response.data.message);
       console.error("Error during auth login:", error);
     }
   };

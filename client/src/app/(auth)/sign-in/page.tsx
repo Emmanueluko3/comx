@@ -86,7 +86,6 @@ export default function SignIn() {
               type="submit"
               isLoading={isSubmitting}
               disabled={isSubmitting}
-              // onClick={() => login(`${origin}${PAGES.validateUser}`)}
               className="w-full rounded-sm font-bold mb-4"
             >
               Sign in

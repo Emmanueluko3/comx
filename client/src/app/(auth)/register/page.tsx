@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import FormField from "@/components/formik/Input";
 import BackButton from "@/components/common/BackButton";
 import { useAuth } from "@/context/AuthContext";
-import { toast } from "sonner";
+import RegistrationSuccessful from "@/components/auth/RegistrationSuccessful";
 
 const tabs = ["individual", "corporate"];
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -75,8 +75,8 @@ export default function Register() {
           payload,
           "register-individual"
         );
-        toast.success(response.data.message);
-        return nextPage && handleNextPage(nextPage);
+
+        if (response) return nextPage && handleNextPage(nextPage);
       }
 
       if (currentPage === PAGES.auth.individualPages.otpVerification) {
@@ -84,12 +84,10 @@ export default function Register() {
           otp: values.otp,
           email: values.email,
         });
-        toast.success(response.data.message);
-        return nextPage && handleNextPage(nextPage);
+        if (response) return nextPage && handleNextPage(nextPage);
       }
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error(error?.response.data.message);
     } finally {
       setSubmitting(false);
     }
@@ -97,6 +95,10 @@ export default function Register() {
   const isFormComplete = (values: any) => {
     return Object.values(values).every((val: any) => val.trim() !== "");
   };
+
+  if (currentPage === PAGES.auth.individualPages.registrationSuccessful) {
+    return <RegistrationSuccessful username={"Emmanuel"} />;
+  }
 
   return (
     <motion.div

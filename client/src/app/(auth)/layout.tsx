@@ -1,5 +1,6 @@
 "use client";
 import ThemeToggle from "@/components/ToggleTheme";
+import { Loader } from "@/components/common/Loader";
 import Logo from "@/components/common/Logo";
 import { useAuthNavigator } from "@/hooks/useAuthNavigator";
 import { Suspense } from "react";
@@ -15,7 +16,7 @@ export default function AuthLayout({
       <ThemeToggle />
       <main className="flex flex-col row-start-2 items-center w-full">
         <Logo className="mb-12" />
-        <Suspense fallback={<>Loading...</>}>{children}</Suspense>
+        <Suspense fallback={<Loader />}>{children}</Suspense>
       </main>
     </div>
   );
