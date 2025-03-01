@@ -13,6 +13,7 @@ interface IndividualFormProps {
   step: string;
 }
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 
 const IndividualForm = ({ step }: IndividualFormProps) => {
   const { updateFormData, formData, handleRegisterUser, handleVerifyUserOTP } =

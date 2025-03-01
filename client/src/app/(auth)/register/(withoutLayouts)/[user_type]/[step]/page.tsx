@@ -1,6 +1,5 @@
 import IndividualForm from "@/components/auth/IndividualForm";
 import { Loader } from "@/components/common/Loader";
-import { individualSteps } from "@/utils/constants";
 import React from "react";
 
 export default async function UserType({

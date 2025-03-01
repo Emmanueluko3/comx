@@ -12,8 +12,8 @@ import { toast } from "sonner";
 type AuthContextType = {
   user: UserData | null;
   accessToken: string | null;
-  formData: UserData | {};
-  updateFormData: (payload: UserData | {}) => void;
+  formData: UserData | null;
+  updateFormData: (payload: UserData | null) => void;
   resetFormData: () => void;
   login: (userData: User) => void;
   handleRegisterUser: (payload: UserData, endpoint: string) => Promise<any>;
@@ -29,15 +29,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserData | null>(null);
-  const [formData, setFormData] = useState<UserData | {}>({});
+  const [formData, setFormData] = useState<UserData | null>(null);
   const router = useRouter();
 
-  const updateFormData = (payload: UserData | {}) => {
+  const updateFormData = (payload: UserData | null) => {
     setFormData((prev: any) => ({ ...prev, ...payload }));
   };
 
   const resetFormData = () => {
-    setFormData({});
+    setFormData(null);
   };
 
   const setCredentials = (accessToken: string, user: UserData) => {
