@@ -15,6 +15,7 @@ const Logo: React.FC<LogoProps> = ({ redirect, className }) => {
         alt=""
         width={500}
         height={500}
+        priority={true}
         className={`h-20 w-40 ${className}`}
       />
     </Link>

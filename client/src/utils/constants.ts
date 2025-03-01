@@ -14,15 +14,17 @@ export const PAGES = {
     validateUser: "/auth/validate-user",
     forgotPassword: "/forgot-password",
     individualPages: {
-      basicInformation: "basic-information",
-      loginDetails: "login-details",
-      otpVerification: "otp-verification",
-      registrationSuccessful: "registration-successful",
+      individual: "/individual",
+      basicInformation: "/basic-information",
+      loginDetails: "/login-details",
+      otpVerification: "/otp-verification",
+      registrationSuccessful: "/registration-successful",
     },
     corporatePages: {
-      basicInformation: "basic-information",
-      loginDetails: "login-details",
-      otpVerification: "otp-verification",
+      corporate: "/corporate",
+      basicInformation: "/company-information",
+      loginDetails: "/login-details",
+      otpVerification: "/otp-verification",
       registrationSuccessful: "registration-successful",
     },
   },
@@ -37,6 +39,21 @@ export const PAGES = {
   },
   home: "/",
 };
+export const individualSteps = [
+  "/register/individual",
+  "/register/individual/basic-information",
+  "/register/individual/login-details",
+  "/register/individual/otp-verification",
+  "/register/individual/registration-successful",
+];
+
+export const corporateSteps = [
+  "/register/corporate",
+  "/register/corporate/company-information",
+  "/register/corporate/login-details",
+  "/register/corporate/otp-verification",
+  "/register/corporate/registration-successful",
+];
 
 export const formFeedback = {
   required: (field: string) => `${field} is required`,
