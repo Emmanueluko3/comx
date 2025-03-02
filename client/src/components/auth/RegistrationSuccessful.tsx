@@ -1,20 +1,14 @@
 import React from "react";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { PAGES } from "@/utils/constants";
 import Link from "next/link";
+import AnimatePage from "../common/AnimatePage";
 interface RegistrationSuccessfulProps {
   username: string;
 }
 function RegistrationSuccessful({ username }: RegistrationSuccessfulProps) {
   return (
-    <motion.div
-      initial={{ y: "100%", opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ x: "100%", opacity: 0 }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
-      className="max-w-lg w-full flex flex-col items-center justify-center p-4 sm:p-10 bg-transparent sm:bg-white sm:rounded-sm mb-10 sm:dark:text-gray-800"
-    >
+    <AnimatePage>
       <Image
         src="/images/registration-successful.png"
         alt=""
@@ -36,7 +30,7 @@ function RegistrationSuccessful({ username }: RegistrationSuccessfulProps) {
       >
         GO TO DASHBOARD
       </Link>
-    </motion.div>
+    </AnimatePage>
   );
 }
 

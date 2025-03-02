@@ -43,9 +43,7 @@ const createCorporateUserSchema = z
     type_of_business: z.string({
       required_error: "Type of business is required",
     }),
-    registration_number: z.string({
-      required_error: "Registration number is required",
-    }),
+    registration_number: z.string().optional(),
     address: z.string().optional(),
   })
   .strict();

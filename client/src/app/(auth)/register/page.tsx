@@ -3,7 +3,6 @@
 import { individualSteps } from "@/utils/constants";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import RegistrationSuccessful from "@/components/auth/RegistrationSuccessful";
 import { Loader } from "@/components/common/Loader";
 
 export default function Register() {
@@ -15,10 +14,6 @@ export default function Register() {
       router.replace(individualSteps[1]);
     }
   }, [router, pathname]);
-
-  if (pathname === individualSteps[4].split("/").pop()) {
-    return <RegistrationSuccessful username={"Emmanuel"} />;
-  }
 
   return <Loader />;
 }

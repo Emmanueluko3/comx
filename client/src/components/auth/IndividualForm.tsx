@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import FormField from "../formik/Input";
 import { Form, Formik } from "formik";
 import { individualValidationSchemas } from "@/utils/schema";
@@ -7,7 +7,8 @@ import { individualSteps } from "@/utils/constants";
 import BackButton from "../common/BackButton";
 import Button from "../common/Button";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { usePersistFormik } from "@/hooks/usePersistFormik";
 
 interface IndividualFormProps {
   step: string;
@@ -16,14 +17,11 @@ interface IndividualFormProps {
 /* eslint-disable  @typescript-eslint/no-unused-vars */
 
 const IndividualForm = ({ step }: IndividualFormProps) => {
-  const { updateFormData, formData, handleRegisterUser, handleVerifyUserOTP } =
-    useAuth();
+  const { handleRegisterUser, handleVerifyUserOTP } = useAuth();
   const router = useRouter();
-
-  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const params = useParams();
 
   const handleNextStep = (nextStep: string) => {
-    setCompletedSteps([...completedSteps, step]);
     router.push(nextStep);
   };
 
@@ -38,9 +36,41 @@ const IndividualForm = ({ step }: IndividualFormProps) => {
   const loginDetailsStep = individualSteps[2].split("/").pop();
   const OTPVerificationStep = individualSteps[3].split("/").pop();
 
+  const [formValues, setFormValues] = usePersistFormik("formData", {
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+    phone_number: "",
+    otp: "",
+  });
+
+  // Prevent user from manually bypassing pages on invalid input
+  useEffect(() => {
+    const isBasicInfoValid = !(
+      formValues.first_name?.trim() &&
+      formValues.last_name?.trim() &&
+      formValues.email?.trim()
+    );
+
+    const isLoginDetails = !(
+      formValues.password.trim() &&
+      formValues.confirm_password.trim() &&
+      formValues.phone_number.trim()
+    );
+
+    if (loginDetailsStep === params.step && isBasicInfoValid) {
+      router.replace(individualSteps[1]);
+    }
+    if (OTPVerificationStep === params.step && isLoginDetails) {
+      router.replace(individualSteps[1]);
+    }
+  }, [formValues, router, OTPVerificationStep, loginDetailsStep]);
+
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
     setSubmitting(true);
-
+    setFormValues(values);
     try {
       const nextStep = allSteps[allSteps.indexOf(step) + 1] || null;
 
@@ -51,7 +81,7 @@ const IndividualForm = ({ step }: IndividualFormProps) => {
       if (step === loginDetailsStep) {
         const { otp, confirm_password, ...payload } = values;
 
-        if (!isFormComplete(values)) {
+        if (!isFormComplete(payload)) {
           router.push(individualSteps[1]);
           return;
         }
@@ -84,15 +114,8 @@ const IndividualForm = ({ step }: IndividualFormProps) => {
 
   return (
     <Formik
-      initialValues={{
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        confirm_password: "",
-        phone_number: "",
-        otp: "",
-      }}
+      enableReinitialize
+      initialValues={formValues}
       validationSchema={individualValidationSchemas[step]}
       onSubmit={handleSubmit}
     >
@@ -108,7 +131,7 @@ const IndividualForm = ({ step }: IndividualFormProps) => {
           <div
             className={`flex ${
               isBasicInformation ? "justify-center" : "justify-between"
-            } items-center col-span-full mt-32`}
+            } items-center col-span-full mt-10`}
           >
             {!isBasicInformation && (
               <BackButton
@@ -121,15 +144,15 @@ const IndividualForm = ({ step }: IndividualFormProps) => {
             )}
             <Button
               type="submit"
+              isLoading={isSubmitting}
               disabled={isSubmitting}
               className="w-fit px-0 rounded-sm bg-transparent hover:bg-transparent hover:text-red-700 text-red-600"
             >
-              {isBasicInformation &&
-                (isSubmitting ? "Processing..." : "NEXT STEP")}
+              {isBasicInformation && "NEXT STEP"}
 
-              {isLoginDetails && (isSubmitting ? "Processing..." : "FINISH")}
+              {isLoginDetails && "FINISH"}
 
-              {isOTPVerification && (isSubmitting ? "Processing..." : "VERIFY")}
+              {isOTPVerification && "VERIFY"}
             </Button>
           </div>
         </Form>

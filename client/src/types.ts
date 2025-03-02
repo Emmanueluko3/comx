@@ -3,6 +3,20 @@ export type User = {
   password: string;
   StaySignedIn: boolean;
 };
+
+export interface RegistrationFormData {
+  first_name?: string;
+  last_name?: string;
+  company_name?: string;
+  email?: string;
+  password?: string;
+  confirm_password?: string;
+  phone_number?: string;
+  otp?: string;
+  date_of_incorporation?: Date;
+  type_of_business?: string;
+}
+
 export interface UserData {
   user_type: string;
   user_id: string;
